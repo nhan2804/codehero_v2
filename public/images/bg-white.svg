@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="154px" height="40px" viewBox="0 0 154 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 61.2 (101010) - https://sketch.com -->
+    <title>AC3FA0BC-A662-47A1-A6F9-9D21FAC37421</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <polygon id="path-1" points="0 0 154 0 154 40 0 40"></polygon>
+    </defs>
+    <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Chi-tiết-khoá-học_ver2" transform="translate(-778.000000, -485.000000)">
+            <g id="Detail" transform="translate(0.000000, 98.000000)">
+                <g id="tab" transform="translate(778.000000, 382.000000)">
+                    <g id="bg-white" transform="translate(0.000000, 5.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="Clip-2"></g>
+                        <path d="M121.784742,0 L94.8716038,0 L59.1283962,0 L32.2152583,0 C11.231097,0 27.1906569,40 0,40 L59.1283962,40 L94.8716038,40 L154,40 C126.809343,40 142.768903,0 121.784742,0" id="Fill-1" fill="#FFFFFF" mask="url(#mask-2)"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

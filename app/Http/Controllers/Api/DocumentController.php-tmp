@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Document_Cate;
+use App\Http\Controllers\Controller;
+
+class DocumentController extends Controller {
+	public function index() {
+		$cate_doc = Document_Cate::all();
+		return response()->json($cate_doc);
+	}
+}

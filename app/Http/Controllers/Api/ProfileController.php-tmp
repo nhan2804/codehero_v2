@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Blog;
+use App\Http\Controllers\Controller;
+use DB;
+use Illuminate\Http\Request;
+
+class ProfileController extends Controller {
+	public function course() {
+		$id_user = session('id');
+		$rs      = DB::table("accounts")->select('course.*')->join('account_course', 'accounts.id', '=', 'account_course.id_user')->join('course', 'account_course.id_course', '=', 'course.id_course')->where('accounts.id', $id_user)->get();
+		return response()->json($rs);
+	}
+	public function blog(Request $req) {
+		$id_user = session('id');
+		$data    = Blog::where('auth', $id_user)->get();
+		return response()->json($data);
+	}
+}
