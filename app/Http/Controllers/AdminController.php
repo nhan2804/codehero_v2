@@ -61,6 +61,7 @@ class AdminController extends Controller
     		Session::put("name",$rs->displayname);
             Session::put("img",$rs->avatar);
             Session::put("coin",$rs->coin);
+            Session::put("vip",$rs->descript);
     		echo "<script>location.reload();</script>";
     	}else{
     		echo "Thông tin tài khoản hoặc mật khẩu không chính xác, vui lòng thử lại sau";

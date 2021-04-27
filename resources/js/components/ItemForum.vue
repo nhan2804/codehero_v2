@@ -1,5 +1,5 @@
 <template>
-	<div class="col-lg-12">
+	<div class="col-lg-12" style="padding: 0 12px 0 0">
 		<div class="item_forum" style="display: flex;padding: 10px 0;margin:10px 0;border-top-left-radius: 20px;border-bottom-right-radius: 20px">
 			<div :style="{backgroundImage:'url(./'+value.avatar+')'}" style=";background-position: center;background-size: cover;width: 80px;height: 80px;border-radius: 50%;margin-left: 8px"></div>
 			<div style="height: 80px;flex: 1;margin-left: 8px;position: relative;">

@@ -1,22 +1,6 @@
-<template>
+ <template>
 	<div>
-		<div class="modal_popup_cmt hidden">
-        <div class="layer"></div>
-        <div class="popup_edit">
-           <form class="form_edit">
-           	<div class="heading_edit">
-           		<h3>Chỉnh sửa bình luận</h3>
-           		<i class="fas fa-times"></i>
-           	</div>
-           	<div class="text_edit">
-           		<input v-model="cmt.content" type="text" name="">
-           	</div>
-           	<div style="display: flex;justify-content: flex-end;padding: 4px;">
-           		<input class="btn btn-success text-right" type="submit" value="Sửa" name="">
-           	</div>
-           </form>
-        </div>
-    </div>
+		
     <br>
     <br>
     <br>
@@ -94,6 +78,9 @@
 				v-bind:user="user"
 				v-bind:idPost="datas.id_post"
 				v-on:replyCmt="replyCmt"
+				v-on:onReactcmt="onReactcmt"
+				v-on:onDelReactcmt="onDelReactcmt"
+				v-on:showReact="showReact"
 				>	
 		</Comment>
 		<br>
@@ -118,7 +105,7 @@
 				<i @click="$refs.file.click()" style="font-size:1.8rem" class="mr-2 fas fa-paperclip">
 					
 				</i>
-				<input  v-on:click="addCmt"  class="btn btn-primary" :data-auth="datas.id" :data-id="datas.id_post" id="" type="submit"  value="Bình luận">
+				<input v-on:click="addCmt"  class="btn btn-primary" type="submit"  value="Bình luận">
 				<input @change="onFileChange" type="file" id="file" style="display: none" ref="file" name="file">
 				
 			</div>
@@ -126,6 +113,54 @@
 		</form>
 		<h3 v-else class="left_cmt">Đăng nhập để bình luận</h3>
 	</div>
+	<template>
+  <div class="text-center">
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
+      <v-card>
+        <v-card-title class="headline grey lighten-2">
+          Xem tất cả lượt thích
+        </v-card-title>
+    	<v-card-text>
+        <div class="img-avt d-flex mb-2 align-items-center" v-for="v in react_cmt" :key="v.id_cmt">
+        	<img :src="'./'+v.avatar" alt="">
+        	<h3>{{v.displayname}}</h3>
+        	
+        </div>
+        <div v-if="load_react_cmt">
+        <div class="d-flex mb-2 align-items-center">
+        	<div class="ske-img"></div>
+        	<h3 class="ske-title"></h3>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+        	<div class="ske-img"></div>
+        	<h3 class="ske-title"></h3>
+        </div>
+        <div class="d-flex mb-2 align-items-center">
+        	<div class="ske-img"></div>
+        	<h3 class="ske-title"></h3>
+        </div>
+        </div>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="dialog = false"
+          >
+            Đóng
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
 </div>
 </template>
 <script>
@@ -144,6 +179,9 @@ export default {
   },
   data () {
     return {
+    	load_react_cmt:true,
+    	react_cmt:[],
+    	dialog: false,
     	elem:8,
     	turn:4,
     	width:1,
@@ -158,7 +196,8 @@ export default {
     	allreact:0,
     	allcmt:[],
     	url:null,
-    	file:'',
+		file:'',
+		pre_url:null,
     	pagination: {
             total: 0,
             per_page: 2,
@@ -188,16 +227,42 @@ export default {
   	
   },
   created(){
-	this.loadViewForum();
+	   this.loadViewForum();
   	this.process();
+    this.startLiveCmt();
   	
   },
   updated(){
   	document.title = this.datas.title_post;
-  	this.cmt.id_post=this.datas.id_post;
+	  this.cmt.id_post=this.datas.id_post;
+
   },
   methods:{
-  	loadViewForum:function() {
+    startLiveCmt(){ 
+      setInterval(()=>{
+      axios.get('api/forum/live-cmt/'+this.id)
+    .then((rep)=> {
+      this.cmt_parent= rep.data.allcmt.data;
+      
+      this.cmt_child= rep.data.cmt_child; 
+    })
+    .catch((e)=>{
+      console.log(e);
+    })
+      },5000);
+    },
+    liveCmt(){
+      axios.get('api/forum/live-cmt/'+this.id)
+    .then((rep)=> {
+      this.cmt_parent= rep.data.allcmt.data;
+      
+      this.cmt_child= rep.data.cmt_child; 
+    })
+    .catch((e)=>{
+      console.log(e);
+    })
+    },
+  	loadViewForum() {
 		axios.get('api/forum/'+this.id+'/slug/?page='+this.query)
 		.then((rep)=> {
 			this.datas= rep.data.datas;
@@ -220,7 +285,8 @@ export default {
     	const file = e.clipboardData.files[0];
     	console.log('test');
   		console.log(file);
-	  	this.url = URL.createObjectURL(file);
+		  this.url = URL.createObjectURL(file);
+		  this.pre_url= this.url;
       	let fr = new FileReader();
       	fr.readAsDataURL(file);
       	fr.onload=(e)=>{
@@ -229,16 +295,58 @@ export default {
     },
     onFileChange(e){
     	const file = e.target.files[0];
-      	this.url = URL.createObjectURL(file);
+		  this.url = URL.createObjectURL(file);
+		  this.pre_url= this.url;
       	let fr = new FileReader();
       	fr.readAsDataURL(file);
       	fr.onload=(e)=>{
       		this.file=e.target.result;
-      		console.log(file);
       	}
       	
-      	console.log(file);
+     
     },
+    onReactcmt(id){
+    	axios.post('api/forum/react-cmt',{
+    		id:id.id,
+    		id_r:id.id_r
+    	})
+		.then((rep)=>{
+		  // alert(rep.data);
+		 this.cmt_parent.forEach((el,i)=>{
+    		if(el.id_cmt==id.id){
+    			el.num_cmt+=1;
+    			el.id_auth_cmt=1;
+    		}
+    	});
+		})
+		.catch((e)=> {
+		  console.log(e);
+		});
+    },
+    showReact(id){
+    	this.load_react_cmt=true;
+    	this.react_cmt=[];
+    	this.dialog=!this.dialog;
+    	this.loadShowReactCmt(id);
+    },
+    onDelReactcmt(id){
+    	axios.post('api/forum/del-react-cmt',{
+    		id:id.id,
+    		id_r:id.id_r
+    	})
+		.then((rep)=>{
+		 this.cmt_parent.forEach((el,i)=>{
+    		if(el.id_cmt==id.id){
+    			el.num_cmt-=1;
+    			el.id_auth_cmt=null;
+    		}
+    	});
+		})
+		.catch((e)=> {
+		  console.log(e);
+		});
+    }
+    ,
     deleteCmt(id){
     	if (confirm("Bạn có chắc muốn xóa bình luận này không?")) {
     	axios.post('api/forum/del-cmt',{
@@ -252,7 +360,18 @@ export default {
 		});
 		}
     },
-
+    loadShowReactCmt(id){
+    	axios.get('api/forum/show-react/'+id.id)
+		.then((res)=>{
+		  // console.log(res.data);
+		  this.react_cmt=res.data;
+		  this.load_react_cmt=false;
+		})
+		.catch((e)=> {
+		  console.log(e);
+		});
+		
+    },
     editCmt(id){
     	this.cmt.content= id.content;
     	var index=getIndex(id.id);
@@ -266,23 +385,39 @@ export default {
     	});
     },
     addCmt(){
-        
-    	axios.post('api/forum/add', {
-    		file_img:this.file,
-		  content: this.cmt.content,
-		  id_post: this.cmt.id_post,
-		  id_user: this.datas.id,
-		  link:window.location.href,
+		// if(this.file){
 
-		})
-		.then((rep)=>{
+		// }
+        this.addImg();
+    	
+    },
+    async addImg(){
+    	let res ='';
+    	if (this.file.length>6) {
+    	
+        let data = new FormData();
+		data.append("image", this.file.split(",")[1]);
 		this.url=null;
-		this.cmt.content='';
-		  this.cmt_parent.push(rep.data);
-		})
-		.catch((e)=> {
-		  console.log(e);
+		this.cmt_parent.push({
+			...this.user,
+			content_cmt:this.cmt.content+'<div class="wrap_pre_img"><i  class="fas fa-snowflake pre_load_img"></i><img style="opacity:0.4;width:100%;" class="d-block" src="'+this.pre_url+'" /></div>'
 		});
+    	res =await axios.post('https://api.imgbb.com/1/upload?key=e715699b8e273a068bfaf6685f07e0c4',data);
+		if(res.status==200){
+			console.log("error");
+		}
+		}
+			let save =await axios.post('api/forum/add-api', {
+			file_img:res?res.data.data.display_url:'',
+			content: this.cmt.content,
+			id_post: this.cmt.id_post,
+			id_user: this.datas.id,
+			link:window.location.href,})
+			this.url=null;
+			this.file='';
+			this.cmt.content='';
+			this.cmt_parent.splice(-1,1);
+			this.cmt_parent.push(save.data);
     },
     replyCmt(data){
     	axios.post('api/forum/reply', {
@@ -340,6 +475,20 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
-
+.img-avt img{
+	width:40px;
+	height:40px;
+	border-radius:50%;
+}
+.ske-img{
+	width:40px;
+	height:40px;
+	border-radius:50%;
+	background: gray;
+}
+.ske-title{
+	background: gray;
+	height:16px;
+	width:80px;
+}
 </style>

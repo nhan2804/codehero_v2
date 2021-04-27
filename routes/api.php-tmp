@@ -22,7 +22,9 @@ function (Request $request) {
 // me
 Route::get('me/course', 'Api\ProfileController@course');
 Route::get('me/blog', 'Api\ProfileController@blog');
-
+Route::get('forum/live-cmt/{id}', 'Api\ForumController@live_cmt');
+Route::get('forum/show-react/{id}', 'Api\ForumController@show_react');
+Route::get('forum/live-cmt/{id}', 'Api\ForumController@live_cmt');
 Route::get('blog', 'Api\BlogController@index');
 Route::get('course', 'Api\CourseController@index');
 Route::get('course/category/{id}', 'Api\CourseController@category');
@@ -32,8 +34,12 @@ Route::get('forum', 'Api\ForumController@index');
 Route::post('forum/del-cmt', 'Api\ForumController@delete');
 Route::get('forum/category', 'Api\ForumController@cate');
 Route::post('forum/add', 'Api\ForumController@add');
+Route::post('forum/react-cmt', 'Api\ForumController@react_cmt');
+Route::post('forum/del-react-cmt', 'Api\ForumController@del_react_cmt');
+Route::post('forum/add-api', 'Api\ForumController@add_api');
 Route::post('forum/reply', 'Api\ForumController@reply');
 Route::get('forum/{id}/{slug}', 'Api\ForumController@view');
+
 Route::get('document', 'Api\DocumentController@index');
 
 // upload file

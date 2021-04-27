@@ -58,8 +58,8 @@ class BlogHomeController extends Controller {
 		if (!$data) {
 			return view('errors.404');
 		}
-		$user_react  = DB::table('react')->join('accounts', 'react.id_auth', '=', 'accounts.id')->where('accounts.id', $id_auth)->where('react.id_post', $id)->get();
-		$allreact    = DB::table('react')->join('accounts', 'react.id_auth', '=', 'accounts.id')->where('react.id_post', $id)->get();
+		$user_react  = DB::table('react')->join('accounts', 'react.id_auth_cmt', '=', 'accounts.id')->where('accounts.id', $id_auth)->where('react.id_post', $id)->get();
+		$allreact    = DB::table('react')->join('accounts', 'react.id_auth_cmt', '=', 'accounts.id')->where('react.id_post', $id)->get();
 		$list_react  = '';
 		$myself      = '';
 		$count_react = count($allreact);
@@ -124,20 +124,21 @@ class BlogHomeController extends Controller {
 		if ($req->session()->get('id')) {
 			$id_post    = $req->get('id_post');
 			$id_auth    = $req->session()->get('id');
-			$user_react = DB::table('react')->join('accounts', 'react.id_auth', '=', 'accounts.id')->where('accounts.id', $id_auth)->where('react.id_post', $id_post)->get();
+			$user_react = DB::table('react')->join('accounts', 'react.id_auth_cmt', '=', 'accounts.id')->where('accounts.id', $id_auth)->where('react.id_post', $id_post)->get();
 			if (count($user_react)) {
-				$delReact = React::where('id_auth', $id_auth)->delete();
+				$delReact = React::where('id_auth_cmt', $id_auth)->delete();
 				echo 'Thích[ ';
 			} else {
-				$addReact          = new React;
-				$addReact->id_auth = $id_auth;
-				$addReact->id_post = $id_post;
-				$addReact->id_cmt  = 0;
+				$addReact              = new React;
+				$addReact->id_auth_cmt = $id_auth;
+				$addReact->id_post     = $id_post;
+				$addReact->id_cmt      = 0;
 				$addReact->save();
 				echo '<i style="color: red" class="fas fa-heart"></i> Đã Thích[Bạn ,';
 			}
 		} else {
 			echo '<script>$(".btn_modal").click();</script>';
+
 		}
 	}
 	public function create_forum() {

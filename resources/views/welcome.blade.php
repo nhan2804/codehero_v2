@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+    <style type="text/css">
+        
+    </style>
     <title>@yield('title')</title>
+
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -28,7 +31,7 @@
     
 </head>
 <body>
-    <div id="app">
+    <div id="app" data-app>
     <a href="javascript:void(0)"><div class="page"><i class="fas fa-angle-up"></i></div></a>
 <div class="modal_popup_nav hidden">
     <div class="layer"></div>
@@ -109,7 +112,7 @@
             </div>
         </div>
     </div>
-    <div class="landing-base">
+    <div class="landing-base jus">
         <nav class="header">
                 <div id="progress_bar">
                 </div>

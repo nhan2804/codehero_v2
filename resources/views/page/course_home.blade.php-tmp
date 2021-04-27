@@ -11,10 +11,8 @@
 	<div class="container-fluid bg_course">
 		<br>
 		<br>
-		<div class="container" style="padding: 0">
-	        <div class="head-course" style="background:#d4d5f5 url({{asset('public/frontend/img/course-head.png')}})center right 3%/contain no-repeat;">
-	            <h1>Học tập cùng <span>chuyên gia</span>,</h1>
-	            <h2>tham gia khoá học lập trình để nâng cao kỹ năng bản thân!</h2>
+	        <div class="head-course hide-on-mobile">
+	            <img src="http://localhost/codehero/public/images/course_banner.jpg" style="width: 100%">
 	            <div id="search" class="block-top-head">
 	                <div class="input-group">
 	                    <form id="form-search" action="/learning?">
@@ -24,8 +22,7 @@
 	                </div>
 	            </div>
 			</div>
-		</div>
-		<div class="container"  style="padding: 0;">
+		<div class="container mobile-container"  style="padding: 0;">
 			<div id="list">
 <?php
 $id_cate = 999;
@@ -45,8 +42,8 @@ $data = $course_cate
 <?php
 $img  = "public".$value->img_course;
 $desc = $value->desc_course;
-if (strlen($desc) > 80) {
-	$desc = substr($desc, 0, 80).'...</p>';
+if (strlen($desc) > 20) {
+	$desc = substr($desc, 0, 20).'...</p>';
 }
 if ($id_cate != $value->id_cate) {
 	echo '<div class="col-lg-12" >
