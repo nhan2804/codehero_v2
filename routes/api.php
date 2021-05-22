@@ -13,12 +13,26 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// header('Access-Control-Allow-Origin: http://localhost:19006');
 
+header('Access-Control-Allow-Methods: GET, POST');
+
+header("Access-Control-Allow-Headers: X-Requested-With");
+header("Access-Control-Allow-Credentials:true");
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 
+// android
+Route::resource('cate-course','Api\CateCourseController');
+Route::resource('m/course','Mobi\CourseController');
+Route::resource('m/forum','Mobi\ForumController');
+Route::resource('m/cate-forum','Mobi\CateForumController');
+Route::resource('m/user','Mobi\UserController');
+Route::resource('m/comment','Mobi\CommentController');
+Route::resource('signin','Api\LoginController');
+// endandroid
 // me
 Route::get('me/course','Api\ProfileController@course');
 Route::get('me/blog','Api\ProfileController@blog');
@@ -26,7 +40,9 @@ Route::get('forum/live-cmt/{id}','Api\ForumController@live_cmt');
 Route::get('forum/show-react/{id}','Api\ForumController@show_react');
 Route::get('forum/live-cmt/{id}','Api\ForumController@live_cmt');
 Route::get('blog','Api\BlogController@index');
+Route::post('course','Api\CourseController@buy_course');
 Route::get('course','Api\CourseController@index');
+
 Route::get('course/category/{id}','Api\CourseController@category');
 Route::get('course/{id}/{slug}','Api\CourseController@view');
 Route::get('blog/{id}','Api\BlogController@view');

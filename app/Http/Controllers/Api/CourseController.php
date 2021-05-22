@@ -9,6 +9,8 @@ use Session;
 use App\Course;
 use App\CateCourse;
 use App\Admin;
+use App\Account_Course;
+use App\Notification;
 class CourseController extends Controller
 {
    public function index()
@@ -42,8 +44,8 @@ class CourseController extends Controller
         $user = Admin::find($id_user);
         if ($id_user) {
             
-            $rs = DB::table("accounts")->join('account_course','accounts.id','=','account_course.id_user')->where('account_course.id_course',$id)->where('accounts.id',$id_user)->get();
-            if (count($rs)) {
+            $rs = DB::table("accounts")->join('account_course','accounts.id','=','account_course.id_user')->where('account_course.id_course',$id)->where('accounts.id',$id_user)->count();
+            if ($rs) {
                 $lesson =DB::table('lesson')->where('course_parent',$id)->get();
                  return response()->json(['bought'=>$rs,'lessons'=>$lesson,'total_star'=>$total_star,'course_detail'=>$data,'user'=>$user]);
             }else{
@@ -53,4 +55,58 @@ class CourseController extends Controller
             return response()->json(['total_star'=>$total_star,'course_detail'=>$data,'user'=>$user]);
         }
    }
+   public function buy_course(Request $req)
+   {
+    // return response()->json(['message'=>$req->all()],200);
+     if ($req->get("id")) {
+            if ($req->session()->get('id')) {
+            $id_user = $req->session()->get('id');
+            $id_course=$req->get("id");
+            if (is_numeric($id_course)) {
+                $rs= Course::find($id_course);
+                if (isset($rs['id_course'])) {
+                    $coin_course= $rs['coin'];
+                    $user= Admin::find($id_user);
+                    $coin_user = $user['coin'];
+                    if ($coin_user>=$coin_course) {
+                        $data = new Account_Course;
+                        $data->id_user=$id_user;
+                        $data->id_course=$id_course;
+                        $data->coin=$coin_course;
+                        $data->save();
+                        $coin_current = $coin_user-$coin_course;
+                        $user->coin=$coin_current;
+                        $user->save();
+
+                        $notify = new Notification;
+                        $notify->content_notify='Mua thành công khóa học';
+                        $notify->id_send=0;
+                        $notify->id_rec=$id_user;
+                        $notify->id_forum=0;
+                        $notify->id_blog=0;
+                        $notify->id_cmt=0;
+                        $notify->type_notify=3;
+                        $notify->status_notify=0;
+                        $notify->link_notify='link';
+                        $notify->save();
+                        return response()->json(['message'=>"Đã mua thành công!"],200);
+                        
+                    }else{
+                      return response()->json(['message'=>"Không đủ tiền, vui lòng nạp thêm!"],405);
+                        
+                    }
+                }else{
+                  return response()->json(['message'=>"Có lỗi xảy ra,vui lòng thử lại(1)!"],405);
+                   
+                }
+            }else{
+              return response()->json(['message'=>"Có lỗi xảy ra,vui lòng thử lại!"],405);
+               
+            }
+        }
+        }else{
+          return response()->json(['message'=>"Có lỗi xảy ra,vui lòng thử lại!2"],405);
+        }
+   }
+
 }
