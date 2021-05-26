@@ -42,17 +42,18 @@ class CourseController extends Controller
         }
         $id_user= session('id') or null;
         $user = Admin::find($id_user);
+         $lesson =DB::table('lesson')->where('course_parent',$id)->get();
         if ($id_user) {
             
             $rs = DB::table("accounts")->join('account_course','accounts.id','=','account_course.id_user')->where('account_course.id_course',$id)->where('accounts.id',$id_user)->count();
             if ($rs) {
-                $lesson =DB::table('lesson')->where('course_parent',$id)->get();
+               
                  return response()->json(['bought'=>$rs,'lessons'=>$lesson,'total_star'=>$total_star,'course_detail'=>$data,'user'=>$user]);
             }else{
-                return response()->json(['total_star'=>$total_star,'course_detail'=>$data,'user'=>$user]);
+                return response()->json(['lessons'=>$lesson,'total_star'=>$total_star,'course_detail'=>$data,'user'=>$user]);
             }
         }else{
-            return response()->json(['total_star'=>$total_star,'course_detail'=>$data,'user'=>$user]);
+            return response()->json(['lessons'=>$lesson,'total_star'=>$total_star,'course_detail'=>$data,'user'=>$user]);
         }
    }
    public function buy_course(Request $req)

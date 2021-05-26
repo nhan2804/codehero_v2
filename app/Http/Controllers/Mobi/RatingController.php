@@ -1,40 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Mobi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Rate;
 use DB;
 use Session;
-use App\Course;
-use App\CateCourse;
-use App\Admin;
-class CateCourseController extends Controller
+class RatingController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $r)
+    public function index()
     {
-        $query = $r->input('query');
-        $arr = array();
-        $data;
-        if($query){
-            $data = DB::table('course_cate')->join('course','course_cate.id_cate','=','course.cate_parent')->where('title_course','LIKE','%'.$query.'%')->orderByDesc('course_cate.id_cate')->get();
         
-        }else{
-            $data = DB::table('course_cate')->join('course','course_cate.id_cate','=','course.cate_parent')->orderByDesc('course_cate.id_cate')->get();
-      
-        
-        }
-        foreach ($data as $key => $v) {
-          $arr[$v->name][] =$v;
-        }
-   
-       $cate =  CateCourse::all();
-        return response()->json(['cate'=>$cate,'courses'=>$arr]);
     }
 
     /**
@@ -42,10 +24,6 @@ class CateCourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function suggest()
-    {
-        return response()->json(Course::all());
-    }
     public function create()
     {
         //
@@ -57,9 +35,15 @@ class CateCourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        //
+        $d = new Rate;
+        $d->id_course=$r->id;
+        $d->id_auth=Session::get('id');
+        $d->comment=$r->text;
+        $d->star_rate=$r->num_rate;
+        $d->save();
+        return response()->json($r->id);
     }
 
     /**
@@ -70,7 +54,16 @@ class CateCourseController extends Controller
      */
     public function show($id)
     {
-        //
+        $rate = Rate::select('star_rate',
+                   DB::raw('count(star_rate) as total'))->where('id_course',$id)->groupBy('star_rate')->get();
+        $arr = [];
+        foreach ($rate as $key => $v) {
+            $arr[$v->star_rate]=$v;
+        }
+        $avg = Rate::where('id_course',$id)->avg('star_rate');
+        $rated = Rate::where('id_course',$id)->with(['user'])->where('id_auth',Session::get('id'))->first();
+        $rates = Rate::where('id_course',$id)->with(['user'])->orderBy('created_at','DESC')->get();
+        return response()->json(['rated'=>$rated,'count'=>$arr,'rates'=>$rates,'avg'=>round($avg,1)]);
     }
 
     /**

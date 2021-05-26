@@ -46,7 +46,7 @@ class ForumController extends Controller {
 		                          ->leftJoin('cmt', 'forum.id_post', '=', 'cmt.id_forum')
 		                          ->where('forum.title_post', 'like', '%'.$title.'%')
 		                          ->groupBy('forum.id_post')
-		                          ->orderBy('forum.created_at', 'DESC')->paginate(8);
+		                          ->orderBy('forum.created_at', 'DESC')->paginate(20);
 
 		$data_new = DB::table('forum')->selectRaw('COUNT(react.id_post) as react,COUNT(cmt.id_forum) as cmt,user, name_cate,img_cate,title_post,forum.created_at,avatar,color_cate,forum.id_post,slug_forum,like_post,comments,views,accounts.id')->Join('forum_cate', 'forum.id_cate_forum', '=', 'forum_cate.id_cate')->Join('accounts', 'forum.auth_post', '=', 'accounts.id')
 		                              ->leftJoin('react', 'forum.id_post', '=', 'react.id_post')
@@ -79,48 +79,49 @@ class ForumController extends Controller {
 		} else {
 			$user_react = false;
 		}
-		$allreact    = DB::table('react')->join('accounts', 'react.id_auth_cmt', '=', 'accounts.id')->where('react.id_post', $id)->get();
-		$list_react  = '';
-		$myself      = '';
-		$count_react = count($allreact);
-		$i           = 1;
-		$check       = false;
-		if ($count_react) {
-			foreach ($allreact as $key => $value) {
-				if ($value->id == $id_auth) {
-					$myself .= '<span class="seft_react">Bạn, </span>';
-					$i++;
-					$check = true;
-					break;
-				}
-			}
+		$allreact = DB::table('react')->join('accounts', 'react.id_auth_cmt', '=', 'accounts.id')->where('react.id_post', $id)->get();
+		// $list_react = '';
+		// $myself='';
+		// $count_react=count($allreact);
+		// $i=1;
+		// $check=false;
+		// if ($count_react) {
+		//    foreach ($allreact as $key => $value) {
+		//       if ($value->id==$id_auth) {
+		//          $myself.='<span class="seft_react">Bạn, </span>';
+		//          $i++;
+		//          $check=true;
+		//          break;
+		//       }
+		//    }
 
-			$id_auth = Session::get('id') or '';
-			foreach ($allreact as $key => $value) {
-				if ($count_react >= 4) {
-					$i++;
-				}
-				if ($check && $value->id == $id_auth) {
+		//    $id_auth = Session::get('id') or '';
+		//    foreach ($allreact as $key => $value) {
+		//       if ($count_react>=4) {
+		//          $i++;
+		//       }
+		//       if ($check && $value->id==$id_auth) {
 
-				} else {
-					$list_react .= '<a class="link_user" status="false">'.$value->displayname.',
-               <span class="display_name"></span>
-               <div class="user_name">
-               </div>
-               </a> ';
-				}
-				if ($i > 3) {
-					break;
-				}
-			}
-			if ($count_react >= 4) {
-				$list_react = $myself.$list_react.'và <a class="other_react" href="#">'.($count_react-3).'</a> người khác đã thích!';
-			} else {
-				$list_react = $myself.$list_react.'đã thích!';
-			}
-		} else {
-			$list_react = "Hãy là người đầu tiên thích bài viết này!";
-		}
+		//       }else{
+		//          $list_react.='<a class="link_user" status="false">'.$value->displayname.',
+		//          <span class="display_name"></span>
+		//          <div class="user_name">
+		//          </div>
+		//          </a> ';
+		//       }
+		//       if ($i>3) {
+		//         break;
+		//       }
+		//    }
+		//    if ($count_react>=4) {
+		//       $list_react=$myself.$list_react.'và <a class="other_react" href="#">'.($count_react-3).'</a> người khác đã thích!';
+		//    }else{
+		//       $list_react=$myself.$list_react.'đã thích!';
+		//    }
+		// }else{
+		$list_react = "'";
+		// $list_react="Hãy là người đầu tiên thích bài viết này!";
+		// }
 		$allcmt = DB::table('cmt')->selectRaw('cmt.*,accounts.*,react.id_auth_cmt,react.id as id_r')
 		                          ->leftJoin('react', function ($j) use ($id_auth, $id) {
 				$j->on('react.id_cmt', 'cmt.id_cmt')

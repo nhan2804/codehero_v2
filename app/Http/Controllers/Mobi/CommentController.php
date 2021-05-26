@@ -69,7 +69,7 @@ class CommentController extends Controller
            $notify->link_notify='';
            $notify->save();
            
-           return response()->json(["message"=>"Done"]);
+           return response()->json(["id"=>$req->id_post]);
     }
 
     /**

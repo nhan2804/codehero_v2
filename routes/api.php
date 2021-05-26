@@ -25,12 +25,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 // android
+Route::get('cate-course/suggest','Api\CateCourseController@suggest');
 Route::resource('cate-course','Api\CateCourseController');
+
 Route::resource('m/course','Mobi\CourseController');
 Route::resource('m/forum','Mobi\ForumController');
 Route::resource('m/cate-forum','Mobi\CateForumController');
 Route::resource('m/user','Mobi\UserController');
 Route::resource('m/comment','Mobi\CommentController');
+Route::resource('m/document','Mobi\DocumentController');
+Route::resource('m/rating','Mobi\RatingController');
 Route::resource('signin','Api\LoginController');
 // endandroid
 // me

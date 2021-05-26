@@ -1,40 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Mobi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
-use Session;
-use App\Course;
-use App\CateCourse;
-use App\Admin;
-class CateCourseController extends Controller
+use App\Document_Cate;
+use App\Document;
+class DocumentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $r)
+    public function index()
     {
-        $query = $r->input('query');
-        $arr = array();
-        $data;
-        if($query){
-            $data = DB::table('course_cate')->join('course','course_cate.id_cate','=','course.cate_parent')->where('title_course','LIKE','%'.$query.'%')->orderByDesc('course_cate.id_cate')->get();
-        
-        }else{
-            $data = DB::table('course_cate')->join('course','course_cate.id_cate','=','course.cate_parent')->orderByDesc('course_cate.id_cate')->get();
-      
-        
-        }
-        foreach ($data as $key => $v) {
-          $arr[$v->name][] =$v;
-        }
-   
-       $cate =  CateCourse::all();
-        return response()->json(['cate'=>$cate,'courses'=>$arr]);
+        $cate_doc = Document_Cate::all();
+        return response()->json($cate_doc);
     }
 
     /**
@@ -42,10 +24,6 @@ class CateCourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function suggest()
-    {
-        return response()->json(Course::all());
-    }
     public function create()
     {
         //
@@ -70,7 +48,8 @@ class CateCourseController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Document::where('id_cate',$id)->get();
+        return response()->json($data);
     }
 
     /**

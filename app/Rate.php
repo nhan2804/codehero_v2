@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Rate extends Model
 {
     protected $table="rate";
+    public function user()
+    {
+    	return $this->belongsTo('App\Admin','id_auth','id');
+    }
 }
