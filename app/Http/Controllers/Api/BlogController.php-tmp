@@ -10,7 +10,8 @@ use Session;
 
 class BlogController extends Controller {
 	public function index() {
-		$data     = DB::table('blog_cate')->join('blog', 'blog_cate.id', '=', 'blog.cate_parent')->where('stt_blog', '0')->orderBy('view_blog', 'DESC')->take(13)->get();
+
+		$data     = DB::table('blog_cate')->select('accounts.*', 'blog_cate.*', 'blog.id_blog', 'blog.title_blog', 'blog.img_blog')->join('blog', 'blog_cate.id', '=', 'blog.cate_parent')->join('accounts', 'blog.auth', '=', 'accounts.id')->where('stt_blog', '0')->orderBy('view_blog', 'DESC')->take(13)->get();
 		$blog_new = DB::table('blog_cate')->join('blog', 'blog_cate.id', '=', 'blog.cate_parent')->where('stt_blog', '0')->orderBy('blog.created_at', 'DESC')->skip(0)->take(5)->get();
 		$arr      = [
 			'datas'    => $data,

@@ -74,7 +74,7 @@ class RatingController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**
@@ -84,9 +84,13 @@ class RatingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $r, $id)
     {
-        //
+        $d = Rate::find($id);
+        $d->comment=$r->text;
+        $d->star_rate=$r->num_rate;
+        $d->save();
+        return response()->json($r->id);
     }
 
     /**

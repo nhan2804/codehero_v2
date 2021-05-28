@@ -38,6 +38,7 @@ Route::resource('m/rating','Mobi\RatingController');
 Route::resource('signin','Api\LoginController');
 // endandroid
 // me
+Route::get('me','Api\ProfileController@my');
 Route::get('me/course','Api\ProfileController@course');
 Route::get('me/blog','Api\ProfileController@blog');
 Route::get('forum/live-cmt/{id}','Api\ForumController@live_cmt');

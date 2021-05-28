@@ -8,6 +8,12 @@ use DB;
 use App\Blog;
 class ProfileController extends Controller
 {
+    public function my()
+    {
+        $id_user = session('id');
+        
+        return response()->json(Admin::find($id_user));   
+    }
     public function course()
     {
     	$id_user = session('id');
@@ -17,7 +23,8 @@ class ProfileController extends Controller
     public function blog(Request $req)
     {
         $id_user = session('id');
-       $data = Blog::where('auth',$id_user)->get();
-       return response()->json($data);	
+        $rs = DB::table("accounts")->select('accounts.*','blog.title_blog','blog.id_blog',,'blog.img_blog')->join('blog','accounts.id','=','blog.auth')->where('auth',$id_user)->get();
+       // $data = Blog::where('auth',$id_user)->get();
+       return response()->json($rs);	
     }
 }
