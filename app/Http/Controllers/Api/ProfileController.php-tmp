@@ -20,7 +20,7 @@ class ProfileController extends Controller {
 	}
 	public function blog(Request $req) {
 		$id_user = session('id');
-		$rs      = DB::table("accounts")->select('accounts.*', 'blog.title_blog', 'blog.id_blog', , 'blog.img_blog')->join('blog', 'accounts.id', '=', 'blog.auth')->where('auth', $id_user)->get();
+		$rs      = DB::table("accounts")->select('accounts.*', 'blog.title_blog', 'blog.id_blog', 'blog.img_blog')->join('blog', 'accounts.id', '=', 'blog.auth')->where('auth', $id_user)->get();
 		// $data = Blog::where('auth',$id_user)->get();
 		return response()->json($rs);
 	}

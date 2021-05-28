@@ -174,7 +174,8 @@ class ForumController extends Controller
    }
    public function add_api(Request $req){
   
-          $html_img='<img class="img-fluid d-block" alt="" src="'.$req->file_img.'" />';
+          // $html_img='<img class="img-fluid d-block" alt="" src="'.$req->file_img.'" />';
+          $html_img='';
           $id_auth= Session::get('id');
            $data = new Comment;
            $get_img = $html_img!='' ? $html_img:'';
