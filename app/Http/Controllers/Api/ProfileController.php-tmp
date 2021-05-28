@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Admin;
 use App\Blog;
 use App\Http\Controllers\Controller;
 use DB;

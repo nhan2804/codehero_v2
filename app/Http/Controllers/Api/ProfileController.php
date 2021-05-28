@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use App\Blog;
+use App\Admin;
 class ProfileController extends Controller
 {
     public function my()
