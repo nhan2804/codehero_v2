@@ -18,4 +18,8 @@ class Comment extends Model
     {
     	return $this->belongsTo('App\Admin','id_auth');
     }
+    public function reply()
+    {
+        return $this->belongsTo('App\Comment','id_parent','id_cmt');
+    }
 }

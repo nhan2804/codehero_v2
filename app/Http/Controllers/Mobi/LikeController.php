@@ -4,16 +4,10 @@ namespace App\Http\Controllers\Mobi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
-use Session;
-use Carbon\Carbon;
-use App\Forum;
-use App\Admin;
-use App\Comment;
-use App\CateForum;
 use App\React;
-use App\Notification;
-class CommentController extends Controller
+use App\Forum;
+use Session;
+class LikeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,39 +35,17 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $r)
     {
-         $c = Forum::find($req->id_post);
-         $c->comments= $c->comments+1;
-         $c->save();
-         $html_img='';
-          $id_auth= Session::get('id');
-           $data = new Comment;
-           $get_img = $html_img!='' ? $html_img:'';
-           $data->content_cmt=$req->content;
-           $data->id_blog=0;
-            $data->img=$req->url;
-           $data->id_forum=$req->id_post;
-           $data->id_parent=0;
-           $data->num_cmt=0;
-           $data->id_auth=$id_auth;
-           $data->save();
-           $id_insert = DB::getPdo()->lastInsertId();
-          // $cmt_add = Comment::find($id_insert);
-          $notify = new Notification;
-           $notify->content_notify='đã bình luận về bài viết của bạn';
-           // if($id_auth=!$req->get('id_auth_rec')) {
-           $notify->id_send=$id_auth;
-           $notify->id_rec=$req->id_rec;
-           $notify->id_forum=$req->id_post;
-           $notify->id_blog=0;
-           $notify->id_cmt=0;
-           $notify->type_notify=1;
-           $notify->status_notify=0;
-           $notify->link_notify='';
-           $notify->save();
-           
-           return response()->json(["id"=>$req->id_post]);
+        $f= Forum::find($r->id);
+        $f->like_post=$f->like_post+1;
+        $f->save();
+        $d = new React;
+        $d->id_post=$r->id;
+        $d->id_cmt=0;
+        $d->id_auth_cmt=Session::get('id');
+        $d->save();
+        return $r->id;
     }
 
     /**

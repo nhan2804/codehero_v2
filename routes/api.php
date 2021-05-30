@@ -35,7 +35,9 @@ Route::resource('m/user','Mobi\UserController');
 Route::resource('m/comment','Mobi\CommentController');
 Route::resource('m/document','Mobi\DocumentController');
 Route::resource('m/rating','Mobi\RatingController');
+Route::resource('m/like','Mobi\LikeController');
 Route::resource('signin','Api\LoginController');
+Route::get('m/list-notify','NotifyController@list_notify');
 // endandroid
 // me
 Route::get('me','Api\ProfileController@my');

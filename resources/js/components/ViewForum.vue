@@ -402,7 +402,7 @@ export default {
 			...this.user,
 			content_cmt:this.cmt.content+'<div class="wrap_pre_img"><i  class="fas fa-snowflake pre_load_img"></i><img style="opacity:0.4;width:100%;" class="d-block" src="'+this.pre_url+'" /></div>'
 		});
-    	res =await axios.post('https://api.imgbb.com/1/upload?key=e715699b8e273a068bfaf6685f07e0c4',data);
+    	res =await axios.post('https://api.imgbb.com/1/upload?key=f85a8e48d418ee83c0c424f9500d227e',data);
 		if(res.status==200){
 			console.log("error");
 		}
