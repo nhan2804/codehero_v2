@@ -31,7 +31,7 @@ class ForumController extends Controller
                 where('react.id_auth_cmt',$id_user);
             })
             ->groupBy('forum.id_post')
-            ->orderBy('forum.created_at','DESC')->paginate(20);
+            ->orderBy('forum.created_at','DESC')->paginate(5);
             return $forum;
     }
 
